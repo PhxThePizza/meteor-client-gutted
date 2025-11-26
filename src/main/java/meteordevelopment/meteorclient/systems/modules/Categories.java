@@ -10,7 +10,6 @@ import meteordevelopment.meteorclient.addons.MeteorAddon;
 import net.minecraft.item.Items;
 
 public class Categories {
-    public static final Category Combat = new Category("Combat", Items.GOLDEN_SWORD.getDefaultStack());
     public static final Category Player = new Category("Player", Items.ARMOR_STAND.getDefaultStack());
     public static final Category Movement = new Category("Movement", Items.DIAMOND_BOOTS.getDefaultStack());
     public static final Category Render = new Category("Render", Items.GLASS.getDefaultStack());
@@ -23,7 +22,6 @@ public class Categories {
         REGISTERING = true;
 
         // Meteor
-        Modules.registerCategory(Combat);
         Modules.registerCategory(Player);
         Modules.registerCategory(Movement);
         Modules.registerCategory(Render);
