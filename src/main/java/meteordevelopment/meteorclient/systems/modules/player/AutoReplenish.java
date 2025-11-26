@@ -10,7 +10,6 @@ import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Categories;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
-import meteordevelopment.meteorclient.systems.modules.combat.AutoTotem;
 import meteordevelopment.meteorclient.utils.player.InvUtils;
 import meteordevelopment.meteorclient.utils.player.SlotUtils;
 import meteordevelopment.orbit.EventHandler;
@@ -118,10 +117,6 @@ public class AutoReplenish extends Module {
         }
 
         // Offhand
-        if (offhand.get() && !Modules.get().get(AutoTotem.class).isLocked()) {
-            ItemStack stack = mc.player.getOffHandStack();
-            checkSlot(9, stack);
-        }
 
         tickDelayLeft = tickDelay.get();
     }

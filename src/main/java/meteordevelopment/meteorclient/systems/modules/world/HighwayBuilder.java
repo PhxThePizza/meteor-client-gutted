@@ -18,7 +18,6 @@ import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Categories;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
-import meteordevelopment.meteorclient.systems.modules.combat.KillAura;
 import meteordevelopment.meteorclient.systems.modules.player.*;
 import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.entity.SortPriority;
@@ -553,7 +552,7 @@ public class HighwayBuilder extends Module {
             return;
         }
 
-        if (Modules.get().get(AutoEat.class).eating || Modules.get().get(AutoGap.class).isEating() || Modules.get().get(KillAura.class).attacking) {
+        if (Modules.get().get(AutoEat.class).eating || Modules.get().get(AutoGap.class).isEating()) {
             input.stop();
             return;
         }

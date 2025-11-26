@@ -12,10 +12,6 @@ import meteordevelopment.meteorclient.settings.*;
 import meteordevelopment.meteorclient.systems.modules.Categories;
 import meteordevelopment.meteorclient.systems.modules.Module;
 import meteordevelopment.meteorclient.systems.modules.Modules;
-import meteordevelopment.meteorclient.systems.modules.combat.AnchorAura;
-import meteordevelopment.meteorclient.systems.modules.combat.BedAura;
-import meteordevelopment.meteorclient.systems.modules.combat.CrystalAura;
-import meteordevelopment.meteorclient.systems.modules.combat.KillAura;
 import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.player.InvUtils;
 import meteordevelopment.meteorclient.utils.player.SlotUtils;
@@ -32,7 +28,6 @@ import java.util.function.BiPredicate;
 
 public class AutoEat extends Module {
     @SuppressWarnings("unchecked")
-    private static final Class<? extends Module>[] AURAS = new Class[]{ KillAura.class, CrystalAura.class, AnchorAura.class, BedAura.class };
 
     // Settings groups
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
@@ -57,12 +52,6 @@ public class AutoEat extends Module {
         .build()
     );
 
-    private final Setting<Boolean> pauseAuras = sgGeneral.add(new BoolSetting.Builder()
-        .name("pause-auras")
-        .description("Pauses all auras when eating.")
-        .defaultValue(true)
-        .build()
-    );
 
     private final Setting<Boolean> pauseBaritone = sgGeneral.add(new BoolSetting.Builder()
         .name("pause-baritone")
@@ -103,7 +92,6 @@ public class AutoEat extends Module {
     public boolean eating;
     private int slot, prevSlot;
 
-    private final List<Class<? extends Module>> wasAura = new ArrayList<>();
     private boolean wasBaritone = false;
 
     public AutoEat() {
@@ -164,18 +152,6 @@ public class AutoEat extends Module {
         prevSlot = mc.player.getInventory().getSelectedSlot();
         eat();
 
-        // Pause auras
-        wasAura.clear();
-        if (pauseAuras.get()) {
-            for (Class<? extends Module> klass : AURAS) {
-                Module module = Modules.get().get(klass);
-
-                if (module.isActive()) {
-                    wasAura.add(klass);
-                    module.toggle();
-                }
-            }
-        }
 
         // Pause baritone
         if (pauseBaritone.get() && PathManagers.get().isPathing() && !wasBaritone) {
@@ -198,16 +174,7 @@ public class AutoEat extends Module {
 
         eating = false;
 
-        // Resume auras
-        if (pauseAuras.get()) {
-            for (Class<? extends Module> klass : AURAS) {
-                Module module = Modules.get().get(klass);
 
-                if (wasAura.contains(klass) && !module.isActive()) {
-                    module.toggle();
-                }
-            }
-        }
 
         // Resume baritone
         if (pauseBaritone.get() && wasBaritone) {

@@ -13,14 +13,11 @@ import meteordevelopment.meteorclient.events.entity.player.JumpVelocityMultiplie
 import meteordevelopment.meteorclient.events.entity.player.PlayerMoveEvent;
 import meteordevelopment.meteorclient.mixininterface.ICamera;
 import meteordevelopment.meteorclient.systems.modules.Modules;
-import meteordevelopment.meteorclient.systems.modules.combat.Hitboxes;
 import meteordevelopment.meteorclient.systems.modules.movement.*;
 import meteordevelopment.meteorclient.systems.modules.movement.elytrafly.ElytraFly;
-import meteordevelopment.meteorclient.systems.modules.render.ESP;
 import meteordevelopment.meteorclient.systems.modules.render.FreeLook;
 import meteordevelopment.meteorclient.systems.modules.render.Freecam;
 import meteordevelopment.meteorclient.systems.modules.render.NoRender;
-import meteordevelopment.meteorclient.systems.modules.world.HighwayBuilder;
 import meteordevelopment.meteorclient.utils.Utils;
 import meteordevelopment.meteorclient.utils.entity.fakeplayer.FakePlayerEntity;
 import net.minecraft.block.Block;
@@ -148,24 +145,12 @@ public abstract class EntityMixin {
         return original;
     }
 
-    @ModifyReturnValue(method = "isInvisibleTo(Lnet/minecraft/entity/player/PlayerEntity;)Z", at = @At("RETURN"))
-    private boolean isInvisibleToCanceller(boolean original) {
-        if (!Utils.canUpdate()) return original;
-        ESP esp = Modules.get().get(ESP.class);
-        if (Modules.get().get(NoRender.class).noInvisibility() || esp.isActive() && !esp.shouldSkip((Entity) (Object) this)) return false;
-        return original;
-    }
 
     @Inject(method = "isGlowing", at = @At("HEAD"), cancellable = true)
     private void isGlowing(CallbackInfoReturnable<Boolean> info) {
         if (Modules.get().get(NoRender.class).noGlowing()) info.setReturnValue(false);
     }
 
-    @Inject(method = "getTargetingMargin", at = @At("HEAD"), cancellable = true)
-    private void onGetTargetingMargin(CallbackInfoReturnable<Float> info) {
-        double v = Modules.get().get(Hitboxes.class).getEntityValue((Entity) (Object) this);
-        if (v != 0) info.setReturnValue((float) v);
-    }
 
     @Inject(method = "isInvisibleTo", at = @At("HEAD"), cancellable = true)
     private void onIsInvisibleTo(PlayerEntity player, CallbackInfoReturnable<Boolean> info) {
@@ -203,11 +188,6 @@ public abstract class EntityMixin {
 
         if (freecam.isActive()) {
             freecam.changeLookDirection(cursorDeltaX * 0.15, cursorDeltaY * 0.15);
-            ci.cancel();
-        }
-        else if (Modules.get().isActive(HighwayBuilder.class)) {
-            Camera camera = mc.gameRenderer.getCamera();
-            ((ICamera) camera).meteor$setRot(camera.getYaw() + cursorDeltaX * 0.15, camera.getPitch() + cursorDeltaY * 0.15);
             ci.cancel();
         }
         else if (freeLook.cameraMode()) {
